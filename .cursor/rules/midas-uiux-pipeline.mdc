@@ -1,0 +1,240 @@
+# Midas UI/UX Development Pipeline
+
+> **MANDATORY WORKFLOW for ALL frontend UI/UX work in midas-frontend/**
+> **Design Source of Truth:** Figma file `avcUZMq2uSw4uGTj7EtZ0Q`
+
+---
+
+## 🚨 REQUIRED STACK (NON-NEGOTIABLE)
+
+### 1. UX Decisions Framework
+**Location:** `.agents/skills/ux-decisions/`
+
+Before ANY UI work, read the relevant reference file:
+| Task | Reference File |
+|------|----------------|
+| New interface | `references/10-checklist-new-interfaces.md` |
+| Layout | `references/23-patterns-visual-hierarchy.md` |
+| Navigation | `references/31-patterns-navigation.md` |
+| Component states | `references/11-checklist-fidelity.md` |
+| Visual style | `references/12-checklist-visual-style.md` |
+| Feedback/loading | `references/25-patterns-feedback.md` |
+| Error handling | `references/26-patterns-error-handling.md` |
+| Accessibility | `references/27-patterns-accessibility.md` |
+
+### 2. Product Context
+**Location:** `docs/`
+
+| Resource | Content |
+|----------|---------|
+| `USER_STORIES.csv` | All user stories with MVP flags |
+| `PRD/*.md` | Feature specifications |
+
+**Key PRDs:**
+| Feature | PRD File |
+|---------|----------|
+| AI Assistant | `PRD/personal-investment-buddy.md` |
+| Avatar Personas | `PRD/investment-avatar-selection.md` |
+| Strategy Module | `PRD/trading-strategies.md` |
+| Portfolio | `PRD/portfolio-management.md` |
+| Watchlists | `PRD/watchlists.md` |
+| AI Chat | `PRD/conversational-ai-assistant.md` |
+
+### 3. MCP Servers (MUST QUERY BEFORE IMPLEMENTING)
+
+| Priority | Server | Purpose |
+|----------|--------|---------|
+| **1st** | `user-Figma` | Official design specs, screenshots, tokens |
+| 2nd | `project-0-midas-backend-shadcn` | Base UI components |
+| 3rd | `project-0-midas-backend-reactbits` | Animations, effects (135+ components) |
+
+---
+
+## Figma MCP (ALWAYS CHECK FIRST)
+
+**File Key:** `avcUZMq2uSw4uGTj7EtZ0Q`
+
+**Tools:**
+| Tool | Use For |
+|------|---------|
+| `get_screenshot` | Visual of target screen |
+| `get_metadata` | Component hierarchy, structure |
+| `get_variable_defs` | Design tokens (colors, spacing, fonts) |
+
+**Pages Available:**
+- Web App - Sign In (auth flows)
+- (B2C Users) Registration
+- (Midas Admin) User Mgmt. Portal
+- Header, Buttons, Charts, Inputs, Dialog, Alerts (components)
+
+---
+
+## shadcn MCP
+
+**Tools:**
+| Tool | Use For |
+|------|---------|
+| `list_items_in_registries` | Browse components |
+| `search_items_in_registries` | Find by keyword |
+| `get_item_examples_from_registries` | Usage examples |
+
+**Components:** Button, Card, Dialog, Table, Form, Input, Select, Tabs, Avatar, Badge, Skeleton, Toast
+
+---
+
+## ReactBits MCP
+
+**Tools:**
+| Tool | Use For |
+|------|---------|
+| `list_components` | Browse 135+ components |
+| `search_components` | Find by keyword |
+| `get_component` | Get code |
+
+**Categories:** animations, backgrounds, buttons, cards, text-animations, navigation
+
+---
+
+## Workflow: WEIGH → NARROW → EXECUTE
+
+### Step 1: WEIGH Information
+```
+1. Read relevant PRD in docs/PRD/
+2. Check USER_STORIES.csv for acceptance criteria
+3. Read UX pattern from .agents/skills/ux-decisions/references/
+4. Query Figma MCP for official design
+5. Query shadcn/reactbits for available components
+```
+
+### Step 2: NARROW Options
+```
+1. What does the PRD require?
+2. What does the Figma design show?
+3. What patterns fit from ux-decisions?
+4. What components exist in MCP servers?
+```
+
+### Step 3: EXECUTE
+```tsx
+/**
+ * UX DECISIONS:
+ * - Figma: Node 746:1804 (Dashboard)
+ * - PRD: portfolio-management.md (US-53)
+ * - Pattern: 23-patterns-visual-hierarchy.md
+ * - Components: shadcn Card, reactbits CountUp
+ */
+```
+
+---
+
+## Component Decision Tree
+
+```
+Need a component?
+│
+├─ Check Figma first → Get design reference
+│
+├─ Base UI (button, card, input, table)?
+│  └─ Query shadcn MCP → Use shadcn component
+│
+├─ Animation or effect?
+│  └─ Query reactbits MCP → Use reactbits component
+│
+├─ Both base + animation?
+│  └─ Combine shadcn + reactbits
+│
+└─ Nothing exists?
+   └─ Build custom + document why
+```
+
+---
+
+## Financial Platform Patterns
+
+When building finance UI:
+
+**Numbers & Data:**
+- Use `tabular-nums` for alignment
+- Consider `font-mono` for dense data
+- Profit/loss must be visually distinct (green/red convention)
+
+**Data Density:**
+- Retail users → cleaner, spacious
+- Professional → denser, more data
+- Check PRD for target user type
+
+**Trust & Credibility:**
+- Finance apps need trustworthy feel
+- Reference ux-decisions for trust patterns
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Base Components | shadcn/ui (via MCP) |
+| Animations | ReactBits (via MCP) |
+| Charts | Recharts |
+| Icons | Lucide React |
+
+---
+
+## Backend API Integration
+
+### Real APIs (ALWAYS use when available)
+
+| Service | Backend | Endpoints |
+|---------|---------|-----------|
+| Auth/Users | midas-user | `/api/v1/auth/*`, `/api/v1/users/*` |
+| Portfolio | midas-user | `/api/v1/userportfolio/*` |
+| Strategies | midas-signal | `/api/v1/builder/strategies/*` |
+| Backtest | midas-backtest | `/api/v1/backtest/*` |
+| Market Data | midas-market-data | `/api/v1/market-data/*` |
+| AI Agent | midas-agent | `/api/v1/agent/chat` |
+
+### Mock Only When Backend Missing
+- Exchange connections (midas-exchange not implemented)
+- Billing/subscription (midas-billing not implemented)
+
+---
+
+## ❌ Anti-Patterns (NEVER DO)
+
+- ❌ Implementing UI without checking Figma first
+- ❌ Building components without querying MCP
+- ❌ Guessing component props
+- ❌ Creating custom animation when reactbits has one
+- ❌ Making visual choices without reading PRD
+- ❌ Not documenting WHY a choice was made
+- ❌ Using emojis as functional icons
+- ❌ Missing hover/focus states
+
+---
+
+## ✅ Required Behavior
+
+- ✅ Query Figma MCP FIRST for official design
+- ✅ Read UX decisions reference before designing
+- ✅ Read relevant PRD before implementing
+- ✅ Query shadcn MCP for base components
+- ✅ Query reactbits MCP for animations
+- ✅ Document reasoning with Figma node reference
+- ✅ Use real APIs when available
+
+---
+
+## Summary
+
+**The rule is simple:**
+> Query Figma → Read PRD → Read UX patterns → Query component MCPs → Implement → Document
+
+**NON-NEGOTIABLE:**
+1. Figma MCP for design reference
+2. PRD + USER_STORIES for requirements
+3. UX decisions framework for patterns
+4. Component MCPs before building
+5. Document all decisions
